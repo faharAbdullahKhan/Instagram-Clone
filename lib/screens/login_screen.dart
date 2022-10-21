@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_flutter/resources/auth_methods.dart';
+import 'package:instagram_flutter/screens/signup_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/utils.dart';
 import 'package:instagram_flutter/widgets/text_field_input.dart';
@@ -15,6 +16,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailTextController = TextEditingController();
   final TextEditingController _passwordTextController = TextEditingController();
+  bool _isLoading  = false;
 
   @override
   void dispose() {
@@ -24,6 +26,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void loginUser() async{
+    setState(() {
+      _isLoading = true;
+    });
     String res = await AuthMethods().loginUser(email: _emailTextController.text, password: _passwordTextController.text);
 
     if(res == 'success') {
@@ -31,6 +36,14 @@ class _LoginScreenState extends State<LoginScreen> {
     }else{
       showSnackBar(res, context);
     }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  void navigateToSignup(){
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SignupScreen()));
   }
 
   @override
@@ -76,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               GestureDetector(
                 onTap: loginUser,
-                child: Container(
+                child: _isLoading ? const Center(child: CircularProgressIndicator(),):Container(
                   width: double.infinity,
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -102,6 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Text("Don't have an account ?"),
                   ),
                   GestureDetector(
+                    onTap: navigateToSignup,
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: const Text("Sign up.", style: TextStyle(fontWeight: FontWeight.bold),),
