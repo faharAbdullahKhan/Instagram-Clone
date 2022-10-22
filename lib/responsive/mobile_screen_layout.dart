@@ -25,6 +25,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     super.initState();
     pageController = PageController();
   }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -32,11 +33,15 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     pageController.dispose();
   }
 
-
   void navigationTapped(int page) {
     // this will act as a link between tab bar and the pageView widget in the scaffold body.
     pageController.jumpToPage(page);
+  }
 
+  void onPageChanged(int page) {
+    setState(() {
+      _page = page;
+    });
   }
 
   @override
@@ -44,11 +49,11 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     // getting _user data from Provider changeNotifier extented class UserProvider.
     // model.User user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
-      body:PageView(
+      body: PageView(
         children: homeScreenItems,
         controller: pageController,
         physics: const NeverScrollableScrollPhysics(),
-        // onPageChanged: onPageChanged,
+        onPageChanged: onPageChanged,
       ),
       bottomNavigationBar: CupertinoTabBar(
         backgroundColor: mobileBackgroundColor,
